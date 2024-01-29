@@ -6,7 +6,8 @@
  *
  * Anything that has a type of "undefined" you will need to replace with something.
  */
-import { IUniversityClass } from "../types/api_types";
+import { IUniversityClass, IAssignment } from "../types/api_types";
+
 
 /**
  * This function might help you write the function below.
@@ -16,7 +17,7 @@ import { IUniversityClass } from "../types/api_types";
  */
 export async function calculateStudentFinalGrade(
   studentID: string,
-  classAssignments: undefined,
+  classAssignments: IAssignment,
   klass: IUniversityClass
 ): Promise<undefined> {
   return undefined;

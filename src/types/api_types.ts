@@ -17,3 +17,10 @@ export interface IUniversityClass {
   status: string;
   semester: string;
 }
+
+export interface IAssignment {
+  assignmentId: string;
+  classId: string;
+  date: string;
+  weight: number;
+}
