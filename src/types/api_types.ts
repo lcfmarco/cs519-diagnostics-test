@@ -14,7 +14,7 @@ export interface IUniversityClass {
   description: string;
   meetingTime: string;
   meetingLocation: string;
-  status: string;
+  status: 'active' | 'inactive'; // Two possible status for a class
   semester: string;
 }
 
@@ -23,4 +23,18 @@ export interface IAssignment {
   classId: string;
   date: string;
   weight: number;
+}
+
+export interface IGrades {
+  classId: string;
+  grades: { [key : string]: number }; // Grades stored as a key-value pair: assignmentId as key and grade as value
+  name: string;
+  studentId: string;
+}
+
+export interface IStudent {
+  dateEnrolled: string;
+  name: string;
+  status: 'enrolled' | 'graduated' | 'other'; // All possible statuses 
+  universityId: string;
 }
