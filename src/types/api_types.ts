@@ -38,3 +38,7 @@ export interface IStudent {
   status: 'enrolled' | 'graduated' | 'other'; // All possible statuses 
   universityId: string;
 }
+
+export interface IGradeTableProps {
+  grades: { studentId: string; studentName: string; finalGrade: number }[];
+}

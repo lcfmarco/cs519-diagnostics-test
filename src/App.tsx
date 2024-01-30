@@ -6,11 +6,13 @@ import { Select, Typography } from "@mui/material";
  */
 import {} from "./globals";
 import { IUniversityClass } from "./types/api_types";
+import { GradeTable } from "./components/GradeTable"; // Importing GradeTable.tsx component to App file
 
 function App() {
   // You will need to use more of these!
   const [currClassId, setCurrClassId] = useState<string>("");
   const [classList, setClassList] = useState<IUniversityClass[]>([]);
+  const [grades, setGrades] = useState<any[]>([]);
 
   /**
    * This is JUST an example of how you might fetch some data(with a different API).
@@ -56,7 +58,8 @@ function App() {
           <Typography variant="h4" gutterBottom>
             Final Grades
           </Typography>
-          <div>Place the grade table here</div>
+          {/* <div>Place the grade table here</div> */}
+          <GradeTable grades={grades} /> {/* Displaying the GradeTable */}
         </Grid>
       </Grid>
     </div>

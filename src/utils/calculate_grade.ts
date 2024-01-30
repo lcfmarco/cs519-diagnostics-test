@@ -6,7 +6,7 @@
  *
  * Anything that has a type of "undefined" you will need to replace with something.
  */
-import { IUniversityClass, IAssignment } from "../types/api_types";
+import { IUniversityClass, IAssignment, IGrades, IStudent} from "../types/api_types";
 
 
 /**
@@ -17,10 +17,17 @@ import { IUniversityClass, IAssignment } from "../types/api_types";
  */
 export async function calculateStudentFinalGrade(
   studentID: string,
-  classAssignments: IAssignment,
-  klass: IUniversityClass
-): Promise<undefined> {
-  return undefined;
+  classAssignments: IAssignment[], // Store assignments as a list (list of IAssignment) as a student can have multiple assignments
+  klass: IUniversityClass,
+  grades: IGrades
+): Promise<number> {
+  let finalGrade = 0;
+  for (const assignment of classAssignments) { // Loop through the assignments in classAssignments
+    const grade_i = grades.grades[assignment.assignmentId]; // Store the raw grade of assignment
+    const weight_i = assignment.weight; // Store the weight of the assignment
+    finalGrade += grade_i * weight_i; // Update the finalGrade as the weighted grade for that assignment
+  }
+  return finalGrade;
 }
 
 /**
@@ -32,5 +39,6 @@ export async function calculateStudentFinalGrade(
  * @returns Some data structure that has a list of each student and their final grade.
  */
 export async function calcAllFinalGrade(classID: string): Promise<undefined> {
+  
   return undefined;
 }
