@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
-import { Select, Typography } from "@mui/material";
+import { Select, Typography, MenuItem } from "@mui/material";
 /**
  * You will find globals from this file useful!
  */
-import {} from "./globals";
-import { IUniversityClass } from "./types/api_types";
+import { TOKEN } from "./globals";
+import { IUniversityClass, IGrades } from "./types/api_types";
 import { GradeTable } from "./components/GradeTable"; // Importing GradeTable.tsx component to App file
+
+type TransformedGrade = {
+  studentId: string;
+  studentName: string;
+  finalGrade: number;
+};
 
 function App() {
   // You will need to use more of these!
   const [currClassId, setCurrClassId] = useState<string>("");
   const [classList, setClassList] = useState<IUniversityClass[]>([]);
-  const [grades, setGrades] = useState<any[]>([]);
+  const [grades, setGrades] = useState<TransformedGrade[]>([]);
 
   /**
    * This is JUST an example of how you might fetch some data(with a different API).
@@ -36,6 +42,35 @@ function App() {
     console.log(json);
   };
 
+  useEffect(() => {
+    const fetchClasses = async () => {
+      const headers = {
+        'Accept': 'application/json',
+        'x-functions-key': '6se7z2q8WGtkxBlXp_YpU-oPq53Av-y_GSYiKyS_COn6AzFuTjj4BQ=='
+      };
+      const url = `https://spark-se-assessment-api.azurewebsites.net/api/class/listBySemester/fall2022?buid=U22651662`;
+      try {
+        const response = await fetch(url,
+          {
+            method: 'GET',
+            headers: headers
+          });
+        if (response.ok) {
+          const classes = await response.json();
+          setClassList(classes);
+        } else {
+          // Handle any errors
+          console.error('Failed to fetch classes:', response.statusText);
+        }
+      } catch (error) {
+        // Handle any exceptions from fetching
+        console.error('Error fetching class list:', error);
+      }
+    };
+    fetchClasses();
+  }, []);
+
+
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
       <Grid container spacing={2} style={{ padding: "1rem" }}>
@@ -49,8 +84,13 @@ function App() {
             Select a class
           </Typography>
           <div style={{ width: "100%" }}>
-            <Select fullWidth={true} label="Class">
+            <Select fullWidth={true} label="Class" onChange={(event) => setCurrClassId(event.target.value as string)} value={currClassId}>
               {/* You'll need to place some code here to generate the list of items in the selection */}
+              {classList.map((universityClass) => (
+                <MenuItem key={universityClass.classId} value={universityClass.classId}>
+                  {universityClass.title}
+                </MenuItem>
+              ))}
             </Select>
           </div>
         </Grid>
