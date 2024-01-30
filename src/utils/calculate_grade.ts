@@ -22,10 +22,29 @@ export async function calculateStudentFinalGrade(
   grades: IGrades
 ): Promise<number> {
   let finalGrade = 0;
+  // console.log(classAssignments);
   for (const assignment of classAssignments) { // Loop through the assignments in classAssignments
-    const grade_i = grades.grades[assignment.assignmentId]; // Store the raw grade of assignment
-    const weight_i = assignment.weight; // Store the weight of the assignment
+    // console.log(assignment);
+    // console.log(numAssignments);
+    // console.log(grades.grades);
+    // console.log(assignment.assignmentId);
+    // console.log("Grades object:", grades);
+    // console.log("Keys in grades.grades:", Object.keys(grades.grades));
+    // console.log("Current assignmentId:", assignment.assignmentId);
+    const gradeObject = grades.grades[0];
+    // console.log(gradeObject);
+
+    // console.log(gradeObject["A3"]);
+    // console.log((gradeObject as any)["A3"]); // Using 'any' type assertion
+
+
+    const grade_i = (gradeObject as any)[assignment.assignmentId]; // Store the raw grade of assignment
+    // console.log(grades.grades[assignment.assignmentId]);
+    // console.log(grade_i);
+    const weight_i = assignment.weight / 100; // Divide by 100 for weighted average -- converts weight to a fraction
+    // console.log(weight_i);
     finalGrade += grade_i * weight_i; // Update the finalGrade as the weighted grade for that assignment
+    // console.log(finalGrade);
   }
   return finalGrade;
 }
@@ -53,7 +72,7 @@ export async function calcAllFinalGrade(classID: string): Promise<{ id: string, 
     });
 
   const students: string[] = await studentResponse.json();
-  console.log(students);
+  // console.log(students);
 
   const classURL = `https://spark-se-assessment-api.azurewebsites.net/api/class/GetById/${classID}?buid=U22651662`;
   const classResponse = await fetch(classURL,
@@ -81,9 +100,9 @@ export async function calcAllFinalGrade(classID: string): Promise<{ id: string, 
   }
 
   for (const student of students) {
-    console.log(student); // Check the structure of the student object
+    // console.log(student); // Check the structure of the student object
     const studentID = student;
-    console.log('studentID:', studentID); // Check if studentID is undefined
+    // console.log('studentID:', studentID); // Check if studentID is undefined
     // const studentId = student.universityId;
     const gradeURL = `https://spark-se-assessment-api.azurewebsites.net/api/student/listGrades/${studentID}/${classID}/?buid=U22651662`;
     const gradeResponse = await fetch(gradeURL,
@@ -93,7 +112,9 @@ export async function calcAllFinalGrade(classID: string): Promise<{ id: string, 
       });
 
     const grades: IGrades = await gradeResponse.json();
+    // console.log(grades);
     const finalGrade = await calculateStudentFinalGrade(studentID, assignments, klass, grades);
+    // console.log(finalGrade);
 
     const stdURL = `https://spark-se-assessment-api.azurewebsites.net/api/student/GetById/${student}?buid=U22651662`
     const stdResponse = await fetch(stdURL,
@@ -103,13 +124,14 @@ export async function calcAllFinalGrade(classID: string): Promise<{ id: string, 
       });
 
     const std: IStudent = await stdResponse.json();
-    console.log(std);
+    // console.log(std);
 
     studentGrades.push({
       id: studentID,
       studentName: std.name,
       finalGrade: finalGrade
     });
+
   }
   return studentGrades;
 }
