@@ -7,9 +7,10 @@ import { Select, Typography, MenuItem } from "@mui/material";
 import {} from "./globals"; 
 import { IUniversityClass, IGrades } from "./types/api_types";
 import { GradeTable } from "./components/GradeTable"; // Importing GradeTable.tsx component to App file
+import { calcAllFinalGrade } from "./utils/calculate_grade";
 
 type TransformedGrade = {
-  studentId: string;
+  id: string;
   studentName: string;
   finalGrade: number;
 };
@@ -70,6 +71,15 @@ function App() {
     fetchClasses();
   }, []);
 
+  const fetchAndSetStudentGrades = async (classID: string) => {
+    try {
+      const studentGrades = await calcAllFinalGrade(classID);
+      setGrades(studentGrades);
+    } catch (error) {
+      console.error("Error fetching and setting student grades:", error);
+    }
+  };  
+
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
@@ -84,7 +94,15 @@ function App() {
             Select a class
           </Typography>
           <div style={{ width: "100%" }}>
-            <Select fullWidth={true} label="Class" onChange={(event) => setCurrClassId(event.target.value as string)} value={currClassId}>
+            <Select fullWidth={true}
+            label="Class" 
+            onChange={(event) => {
+              const selectedClassID = event.target.value as string;
+              setCurrClassId(event.target.value as string);
+              fetchAndSetStudentGrades(selectedClassID);
+            }
+              } 
+              value={currClassId}>
               {/* You'll need to place some code here to generate the list of items in the selection */}
               {classList.map((universityClass) => (
                 <MenuItem key={universityClass.classId} value={universityClass.classId}>

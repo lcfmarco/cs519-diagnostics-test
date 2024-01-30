@@ -6,7 +6,7 @@
  *
  * Anything that has a type of "undefined" you will need to replace with something.
  */
-import { IUniversityClass, IAssignment, IGrades, IStudent} from "../types/api_types";
+import { IUniversityClass, IAssignment, IGrades, IStudent } from "../types/api_types";
 
 
 /**
@@ -38,21 +38,22 @@ export async function calculateStudentFinalGrade(
  * @param classID The ID of the class for which we want to calculate the final grades
  * @returns Some data structure that has a list of each student and their final grade.
  */
-export async function calcAllFinalGrade(classID: string): Promise<{ studentId: string, studentName: string, finalGrade: number}[]> { // Returning an array of student ID, name and grade
+export async function calcAllFinalGrade(classID: string): Promise<{ id: string, studentName: string, finalGrade: number }[]> { // Returning an array of student ID, name and grade
 
-  
+
   const studentURL = `https://spark-se-assessment-api.azurewebsites.net/api/class/listStudents/${classID}?buid=U22651662`;
   const studentHeaders = {
     'Accept': 'application/json',
     'x-functions-key': '6se7z2q8WGtkxBlXp_YpU-oPq53Av-y_GSYiKyS_COn6AzFuTjj4BQ=='
   }
-  const studentResponse = await fetch(studentURL, 
+  const studentResponse = await fetch(studentURL,
     {
       method: 'GET',
       headers: studentHeaders
     });
-  
-  const students: IStudent[] = await studentResponse.json();
+
+  const students: string[] = await studentResponse.json();
+  console.log(students);
 
   const classURL = `https://spark-se-assessment-api.azurewebsites.net/api/class/GetById/${classID}?buid=U22651662`;
   const classResponse = await fetch(classURL,
@@ -62,10 +63,10 @@ export async function calcAllFinalGrade(classID: string): Promise<{ studentId: s
     });
   const klass: IUniversityClass = await classResponse.json();
 
-  const studentGrades: {studentId: string, studentName: string, finalGrade: number }[] = [];
-  
+  const studentGrades: { id: string, studentName: string, finalGrade: number }[] = [];
+
   const assignmentURL = `https://spark-se-assessment-api.azurewebsites.net/api/class/listAssignments/${classID}?buid=U22651662`
-  const assignmentResponse = await fetch(assignmentURL, 
+  const assignmentResponse = await fetch(assignmentURL,
     {
       method: 'GET',
       headers: studentHeaders
@@ -73,16 +74,19 @@ export async function calcAllFinalGrade(classID: string): Promise<{ studentId: s
 
   const assignments: IAssignment[] = await assignmentResponse.json();
 
-  const assignmentWeights: { [key: string]: number} = {};
+  const assignmentWeights: { [key: string]: number } = {};
 
   for (const assignment of assignments) {
     assignmentWeights[assignment.assignmentId] = assignment.weight;
   }
 
   for (const student of students) {
-    const studentID = student.universityId;
+    console.log(student); // Check the structure of the student object
+    const studentID = student;
+    console.log('studentID:', studentID); // Check if studentID is undefined
+    // const studentId = student.universityId;
     const gradeURL = `https://spark-se-assessment-api.azurewebsites.net/api/student/listGrades/${studentID}/${classID}/?buid=U22651662`;
-    const gradeResponse = await fetch(gradeURL, 
+    const gradeResponse = await fetch(gradeURL,
       {
         method: 'GET',
         headers: studentHeaders
@@ -90,15 +94,22 @@ export async function calcAllFinalGrade(classID: string): Promise<{ studentId: s
 
     const grades: IGrades = await gradeResponse.json();
     const finalGrade = await calculateStudentFinalGrade(studentID, assignments, klass, grades);
-    
+
+    const stdURL = `https://spark-se-assessment-api.azurewebsites.net/api/student/GetById/${student}?buid=U22651662`
+    const stdResponse = await fetch(stdURL,
+      {
+        method: 'GET',
+        headers: studentHeaders
+      });
+
+    const std: IStudent = await stdResponse.json();
+    console.log(std);
+
     studentGrades.push({
-      studentId: studentID,
-      studentName: student.name,
+      id: studentID,
+      studentName: std.name,
       finalGrade: finalGrade
     });
   }
-
-
-
   return studentGrades;
 }

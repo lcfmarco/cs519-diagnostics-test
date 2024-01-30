@@ -40,5 +40,5 @@ export interface IStudent {
 }
 
 export interface IGradeTableProps {
-  grades: { studentId: string; studentName: string; finalGrade: number }[];
+  grades: { id: string; studentName: string; finalGrade: number }[];
 }
