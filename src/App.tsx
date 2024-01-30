@@ -4,7 +4,7 @@ import { Select, Typography, MenuItem } from "@mui/material";
 /**
  * You will find globals from this file useful!
  */
-import { TOKEN } from "./globals";
+import {} from "./globals"; 
 import { IUniversityClass, IGrades } from "./types/api_types";
 import { GradeTable } from "./components/GradeTable"; // Importing GradeTable.tsx component to App file
 
@@ -46,9 +46,9 @@ function App() {
     const fetchClasses = async () => {
       const headers = {
         'Accept': 'application/json',
-        'x-functions-key': '6se7z2q8WGtkxBlXp_YpU-oPq53Av-y_GSYiKyS_COn6AzFuTjj4BQ=='
+        'x-functions-key': '6se7z2q8WGtkxBlXp_YpU-oPq53Av-y_GSYiKyS_COn6AzFuTjj4BQ==' // Token in globals.ts (ideally I pass it from globals)
       };
-      const url = `https://spark-se-assessment-api.azurewebsites.net/api/class/listBySemester/fall2022?buid=U22651662`;
+      const url = `https://spark-se-assessment-api.azurewebsites.net/api/class/listBySemester/fall2022?buid=U22651662`; // According to API, we should only query fall 2022 classes
       try {
         const response = await fetch(url,
           {
@@ -59,7 +59,7 @@ function App() {
           const classes = await response.json();
           setClassList(classes);
         } else {
-          // Handle any errors
+          // Error (only status code avaliable is 401)
           console.error('Failed to fetch classes:', response.statusText);
         }
       } catch (error) {

@@ -38,7 +38,67 @@ export async function calculateStudentFinalGrade(
  * @param classID The ID of the class for which we want to calculate the final grades
  * @returns Some data structure that has a list of each student and their final grade.
  */
-export async function calcAllFinalGrade(classID: string): Promise<undefined> {
+export async function calcAllFinalGrade(classID: string): Promise<{ studentId: string, studentName: string, finalGrade: number}[]> { // Returning an array of student ID, name and grade
+
   
-  return undefined;
+  const studentURL = `https://spark-se-assessment-api.azurewebsites.net/api/class/listStudents/${classID}?buid=U22651662`;
+  const studentHeaders = {
+    'Accept': 'application/json',
+    'x-functions-key': '6se7z2q8WGtkxBlXp_YpU-oPq53Av-y_GSYiKyS_COn6AzFuTjj4BQ=='
+  }
+  const studentResponse = await fetch(studentURL, 
+    {
+      method: 'GET',
+      headers: studentHeaders
+    });
+  
+  const students: IStudent[] = await studentResponse.json();
+
+  const classURL = `https://spark-se-assessment-api.azurewebsites.net/api/class/GetById/${classID}?buid=U22651662`;
+  const classResponse = await fetch(classURL,
+    {
+      method: 'GET',
+      headers: studentHeaders
+    });
+  const klass: IUniversityClass = await classResponse.json();
+
+  const studentGrades: {studentId: string, studentName: string, finalGrade: number }[] = [];
+  
+  const assignmentURL = `https://spark-se-assessment-api.azurewebsites.net/api/class/listAssignments/${classID}?buid=U22651662`
+  const assignmentResponse = await fetch(assignmentURL, 
+    {
+      method: 'GET',
+      headers: studentHeaders
+    });
+
+  const assignments: IAssignment[] = await assignmentResponse.json();
+
+  const assignmentWeights: { [key: string]: number} = {};
+
+  for (const assignment of assignments) {
+    assignmentWeights[assignment.assignmentId] = assignment.weight;
+  }
+
+  for (const student of students) {
+    const studentID = student.universityId;
+    const gradeURL = `https://spark-se-assessment-api.azurewebsites.net/api/student/listGrades/${studentID}/${classID}/?buid=U22651662`;
+    const gradeResponse = await fetch(gradeURL, 
+      {
+        method: 'GET',
+        headers: studentHeaders
+      });
+
+    const grades: IGrades = await gradeResponse.json();
+    const finalGrade = await calculateStudentFinalGrade(studentID, assignments, klass, grades);
+    
+    studentGrades.push({
+      studentId: studentID,
+      studentName: student.name,
+      finalGrade: finalGrade
+    });
+  }
+
+
+
+  return studentGrades;
 }
