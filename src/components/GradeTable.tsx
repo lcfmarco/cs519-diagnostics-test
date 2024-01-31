@@ -25,11 +25,11 @@ export function dummyData() {
 export const GradeTable: React.FC<IGradeTableProps> = ({ grades }) => {
 
   const columns: GridColDef[] = [
-    { field: 'studentId', headerName: 'Student ID', width: 110 }, 
+    { field: 'id', headerName: 'Student ID', width: 110 },
     { field: 'studentName', headerName: 'Student Name', width: 130 },
-    { field: 'classId', headerName: 'Class ID', width: 110},
-    { field: 'className', headerName: 'Class Name', width: 110},
-    { field: 'semester', headerName: 'Semester', width: 110},
+    { field: 'classId', headerName: 'Class ID', width: 110 },
+    { field: 'className', headerName: 'Class Name', width: 110 },
+    { field: 'semester', headerName: 'Semester', width: 110 },
     {
       field: 'finalGrade',
       headerName: 'Final Grade',
