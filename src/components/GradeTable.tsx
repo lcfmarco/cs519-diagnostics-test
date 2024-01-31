@@ -1,7 +1,7 @@
 import React from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
-import { IGradeTableProps, IUniversityClass, IAssignment, IGrades, IStudent } from "../types/api_types";
+import { IGradeTableProps } from "../types/api_types";
 
 /**
  * You might find it useful to have some dummy data for your own testing.

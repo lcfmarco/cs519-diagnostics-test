@@ -5,9 +5,9 @@ import { Select, Typography, MenuItem } from "@mui/material";
  * You will find globals from this file useful!
  */
 import {} from "./globals"; 
-import { IUniversityClass, IGrades } from "./types/api_types";
+import { IUniversityClass} from "./types/api_types";
 import { GradeTable } from "./components/GradeTable"; // Importing GradeTable.tsx component to App file
-import { calcAllFinalGrade, fetchAssignments, fetchClassById, fetchStudentDetails, fetchStudentGrades, fetchStudents } from "./utils/calculate_grade";
+import { calcAllFinalGrade, fetchClassById, fetchStudentDetails} from "./utils/calculate_grade";
 
 
 type TransformedGrade = {
@@ -36,13 +36,13 @@ function App() {
    * You will also need to explore the use of async/await.
    *
    */
-  const fetchSomeData = async () => {
-    const res = await fetch("https://cat-fact.herokuapp.com/facts/", {
-      method: "GET",
-    });
-    const json = await res.json();
-    console.log(json);
-  };
+  // const fetchSomeData = async () => {
+  //   const res = await fetch("https://cat-fact.herokuapp.com/facts/", {
+  //     method: "GET",
+  //   });
+  //   const json = await res.json();
+  //   console.log(json);
+  // };
 
   // Fetching the classes of fall2022 for our drop down menu
   useEffect(() => { 
