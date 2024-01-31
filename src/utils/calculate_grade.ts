@@ -60,6 +60,19 @@ async function fetchStudentGrades(studentID: string, classID: string): Promise<I
     return grades;
 }
 
+async function fetchStudentDetails(studentID: string): Promise<IStudent> {
+  const stdURL = `https://spark-se-assessment-api.azurewebsites.net/api/student/GetById/${studentID}?buid=U22651662`
+    const stdResponse = await fetch(stdURL,
+      {
+        method: 'GET',
+        headers: headers
+      });
+
+    const std: IStudent = await stdResponse.json();
+
+    return std;
+}
+
 
 /**
  * This function might help you write the function below.
@@ -155,15 +168,14 @@ export async function calcAllFinalGrade(classID: string): Promise<{ id: string, 
     const finalGrade = await calculateStudentFinalGrade(studentID, assignments, klass, grades);
     // console.log(finalGrade);
 
-    const stdURL = `https://spark-se-assessment-api.azurewebsites.net/api/student/GetById/${student}?buid=U22651662`
-    const stdResponse = await fetch(stdURL,
-      {
-        method: 'GET',
-        headers: headers
-      });
+    // const stdURL = `https://spark-se-assessment-api.azurewebsites.net/api/student/GetById/${student}?buid=U22651662`
+    // const stdResponse = await fetch(stdURL,
+    //   {
+    //     method: 'GET',
+    //     headers: headers
+    //   });
 
-    const std: IStudent = await stdResponse.json();
-    // console.log(std);
+    const std: IStudent = await fetchStudentDetails(studentID);
 
     studentGrades.push({
       id: studentID,
