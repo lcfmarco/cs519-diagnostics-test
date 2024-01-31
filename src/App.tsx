@@ -84,16 +84,34 @@ function App() {
 
   const fetchAndSetStudentGrades = async (classID: string) => {
     try {
-      const studentGrades = await calcAllFinalGrade(classID);
-      const classDetails = await fetchClassById(classID);
+      const studentGrades = await calcAllFinalGrade(classID); // Calculating the list of final grades for the chosen class
+      const classDetails = await fetchClassById(classID); // Fetching the class details of the class for the grades table
 
-      const combinedData = studentGrades.map(grade => ({
-        ...grade,
-        classId: classDetails.classId,
-        className: classDetails.title,
-        semester: classDetails.semester
+      // console.log(studentGrades);
+
+      // const combinedData = studentGrades.map(grade => ({ // Combining the data together to be reflected onto the data table
+      //   ...grade,
+      //   classId: classDetails.classId,
+      //   className: classDetails.title,
+      //   semester: classDetails.semester
+      // }));
+      const combinedData = await Promise.all(studentGrades.map(async (grade) => {
+        // Fetch individual student details
+        const studentDetails = await fetchStudentDetails(grade.id);
+        console.log(studentDetails);
+        console.log(studentDetails[0].name);
+        console.log(studentDetails[0].universityId);
+        return {
+          id: studentDetails[0].universityId,
+          studentName: studentDetails[0].name,
+          finalGrade: grade.finalGrade,
+          classId: classDetails.classId,
+          className: classDetails.title,
+          semester: classDetails.semester
+        };
       }));
-      setGrades(combinedData);
+      
+      setGrades(combinedData); // Set the grades variable as combined data
     } catch (error) {
       console.error("Error fetching and setting student grades:", error);
     }

@@ -62,7 +62,7 @@ export async function fetchStudentGrades(studentID: string, classID: string): Pr
     return grades;
 }
 
-export async function fetchStudentDetails(studentID: string): Promise<IStudent> {
+export async function fetchStudentDetails(studentID: string): Promise<IStudent[]> {
   const stdURL = `https://spark-se-assessment-api.azurewebsites.net/api/student/GetById/${studentID}?buid=U22651662`
     const stdResponse = await fetch(stdURL,
       {
@@ -70,7 +70,7 @@ export async function fetchStudentDetails(studentID: string): Promise<IStudent> 
         headers: headers
       });
 
-    const std: IStudent = await stdResponse.json();
+    const std: IStudent[] = await stdResponse.json();
 
     return std;
 }
@@ -138,11 +138,13 @@ export async function calcAllFinalGrade(classID: string): Promise<{ id: string, 
     const finalGrade = await calculateStudentFinalGrade(studentID, assignments, klass, grades);
     // console.log(finalGrade);
 
-    const std: IStudent = await fetchStudentDetails(studentID);
-
+    const std: IStudent[] = await fetchStudentDetails(studentID);
+    // console.log(std[0].universityId);
+    // console.log(std);
+    // console.log(std[0].name);
     studentGrades.push({
       id: studentID,
-      studentName: std.name,
+      studentName: std[0].name,
       finalGrade: finalGrade
     });
 
