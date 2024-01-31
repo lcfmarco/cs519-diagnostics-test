@@ -7,7 +7,8 @@ import { Select, Typography, MenuItem } from "@mui/material";
 import {} from "./globals"; 
 import { IUniversityClass, IGrades } from "./types/api_types";
 import { GradeTable } from "./components/GradeTable"; // Importing GradeTable.tsx component to App file
-import { calcAllFinalGrade } from "./utils/calculate_grade";
+import { calcAllFinalGrade, fetchAssignments, fetchClassById, fetchStudentDetails, fetchStudentGrades, fetchStudents } from "./utils/calculate_grade";
+
 
 type TransformedGrade = {
   id: string;
@@ -20,6 +21,7 @@ function App() {
   const [currClassId, setCurrClassId] = useState<string>("");
   const [classList, setClassList] = useState<IUniversityClass[]>([]);
   const [grades, setGrades] = useState<TransformedGrade[]>([]);
+  const [gradeTableData, setGradeTableData] = useState([]);
 
   /**
    * This is JUST an example of how you might fetch some data(with a different API).
@@ -71,14 +73,35 @@ function App() {
     fetchClasses();
   }, []);
 
+  // const fetchAndSetStudentGrades = async (classID: string) => {
+  //   try {
+  //     const studentGrades = await calcAllFinalGrade(classID);
+  //     setGrades(studentGrades);
+  //   } catch (error) {
+  //     console.error("Error fetching and setting student grades:", error);
+  //   }
+  // };  
+
   const fetchAndSetStudentGrades = async (classID: string) => {
     try {
       const studentGrades = await calcAllFinalGrade(classID);
-      setGrades(studentGrades);
+      const classDetails = await fetchClassById(classID);
+
+      const combinedData = studentGrades.map(grade => ({
+        ...grade,
+        classId: classDetails.classId,
+        className: classDetails.title,
+        semester: classDetails.semester
+      }));
+      setGrades(combinedData);
     } catch (error) {
       console.error("Error fetching and setting student grades:", error);
     }
   };  
+
+  // const tableData = await Promise.all(students.map(async (student) => {
+  //   const grades = await fetchGrades(student.id, classID);
+  // }))
 
 
   return (

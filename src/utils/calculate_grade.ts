@@ -8,12 +8,14 @@
  */
 import { IUniversityClass, IAssignment, IGrades, IStudent } from "../types/api_types";
 
+// Headers used for every API call
 const headers = {
   'Accept': 'application/json',
   'x-functions-key': '6se7z2q8WGtkxBlXp_YpU-oPq53Av-y_GSYiKyS_COn6AzFuTjj4BQ=='
 }
+
 // Fetching Functions that will be exported to other files that require these functions
-async function fetchStudents(classID: string): Promise<string[]> {
+export async function fetchStudents(classID: string): Promise<string[]> {
   const studentURL = `https://spark-se-assessment-api.azurewebsites.net/api/class/listStudents/${classID}?buid=U22651662`;
   
   const studentResponse = await fetch(studentURL,
@@ -25,7 +27,7 @@ async function fetchStudents(classID: string): Promise<string[]> {
   return await studentResponse.json();
 }
 
-async function fetchClassById(classID: string): Promise<IUniversityClass> {
+export async function fetchClassById(classID: string): Promise<IUniversityClass> {
   const classURL = `https://spark-se-assessment-api.azurewebsites.net/api/class/GetById/${classID}?buid=U22651662`;
   const classResponse = await fetch(classURL,
     {
@@ -36,7 +38,7 @@ async function fetchClassById(classID: string): Promise<IUniversityClass> {
   return klass;
 }
 
-async function fetchAssignments(classID: string): Promise<IAssignment[]> {
+export async function fetchAssignments(classID: string): Promise<IAssignment[]> {
   const assignmentURL = `https://spark-se-assessment-api.azurewebsites.net/api/class/listAssignments/${classID}?buid=U22651662`
   const assignmentResponse = await fetch(assignmentURL,
     {
@@ -48,7 +50,7 @@ async function fetchAssignments(classID: string): Promise<IAssignment[]> {
   return assignments;
 }
 
-async function fetchStudentGrades(studentID: string, classID: string): Promise<IGrades> {
+export async function fetchStudentGrades(studentID: string, classID: string): Promise<IGrades> {
   const gradeURL = `https://spark-se-assessment-api.azurewebsites.net/api/student/listGrades/${studentID}/${classID}/?buid=U22651662`;
     const gradeResponse = await fetch(gradeURL,
       {
@@ -60,7 +62,7 @@ async function fetchStudentGrades(studentID: string, classID: string): Promise<I
     return grades;
 }
 
-async function fetchStudentDetails(studentID: string): Promise<IStudent> {
+export async function fetchStudentDetails(studentID: string): Promise<IStudent> {
   const stdURL = `https://spark-se-assessment-api.azurewebsites.net/api/student/GetById/${studentID}?buid=U22651662`
     const stdResponse = await fetch(stdURL,
       {
@@ -73,6 +75,7 @@ async function fetchStudentDetails(studentID: string): Promise<IStudent> {
     return std;
 }
 
+// END OF EXTERNAL FUNCTIONS
 
 /**
  * This function might help you write the function below.
@@ -111,37 +114,12 @@ export async function calculateStudentFinalGrade(
 export async function calcAllFinalGrade(classID: string): Promise<{ id: string, studentName: string, finalGrade: number }[]> { // Returning an array of student ID, name and grade
 
 
-  // const studentURL = `https://spark-se-assessment-api.azurewebsites.net/api/class/listStudents/${classID}?buid=U22651662`;
-  // const studentHeaders = {
-  //   'Accept': 'application/json',
-  //   'x-functions-key': '6se7z2q8WGtkxBlXp_YpU-oPq53Av-y_GSYiKyS_COn6AzFuTjj4BQ=='
-  // }
-  // const studentResponse = await fetch(studentURL,
-  //   {
-  //     method: 'GET',
-  //     headers: studentHeaders
-  //   });
-
   const students: string[] = await fetchStudents(classID);
   // console.log(students);
   
-
-  // const classURL = `https://spark-se-assessment-api.azurewebsites.net/api/class/GetById/${classID}?buid=U22651662`;
-  // const classResponse = await fetch(classURL,
-  //   {
-  //     method: 'GET',
-  //     headers: studentHeaders
-  //   });
   const klass: IUniversityClass = await fetchClassById(classID);
 
   const studentGrades: { id: string, studentName: string, finalGrade: number }[] = [];
-
-  // const assignmentURL = `https://spark-se-assessment-api.azurewebsites.net/api/class/listAssignments/${classID}?buid=U22651662`
-  // const assignmentResponse = await fetch(assignmentURL,
-  //   {
-  //     method: 'GET',
-  //     headers: studentHeaders
-  //   });
 
   const assignments: IAssignment[] = await fetchAssignments(classID);
 
@@ -152,28 +130,13 @@ export async function calcAllFinalGrade(classID: string): Promise<{ id: string, 
   }
 
   for (const student of students) {
-    // console.log(student); // Check the structure of the student object
     const studentID = student;
     // console.log('studentID:', studentID); // Check if studentID is undefined
-    // const studentId = student.universityId;
-    // const gradeURL = `https://spark-se-assessment-api.azurewebsites.net/api/student/listGrades/${studentID}/${classID}/?buid=U22651662`;
-    // const gradeResponse = await fetch(gradeURL,
-    //   {
-    //     method: 'GET',
-    //     headers: studentHeaders
-    //   });
-
+    
     const grades: IGrades = await fetchStudentGrades(studentID, classID);
     // console.log(grades);
     const finalGrade = await calculateStudentFinalGrade(studentID, assignments, klass, grades);
     // console.log(finalGrade);
-
-    // const stdURL = `https://spark-se-assessment-api.azurewebsites.net/api/student/GetById/${student}?buid=U22651662`
-    // const stdResponse = await fetch(stdURL,
-    //   {
-    //     method: 'GET',
-    //     headers: headers
-    //   });
 
     const std: IStudent = await fetchStudentDetails(studentID);
 
