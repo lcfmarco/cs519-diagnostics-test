@@ -1,7 +1,7 @@
 import React from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
-import { IGradeTableProps } from "../types/api_types";
+import { IGradeTableProps, IUniversityClass, IAssignment, IGrades, IStudent } from "../types/api_types";
 
 /**
  * You might find it useful to have some dummy data for your own testing.
@@ -21,11 +21,9 @@ export function dummyData() {
  * You might need to change the signature of this function.
  *
  */
-// export const GradeTable = () => {
-//   return <></>;
-// };
 
 export const GradeTable: React.FC<IGradeTableProps> = ({ grades }) => {
+
   const columns: GridColDef[] = [
     { field: 'studentId', headerName: 'Student ID', width: 110 }, 
     { field: 'studentName', headerName: 'Student Name', width: 130 },
@@ -41,6 +39,8 @@ export const GradeTable: React.FC<IGradeTableProps> = ({ grades }) => {
       headerAlign: 'left',
     },
   ];
+
+
 
   return (
     <div style={{ height: 400, width: '100%' }}>
