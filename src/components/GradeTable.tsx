@@ -24,6 +24,7 @@ export function dummyData() {
 
 export const GradeTable: React.FC<IGradeTableProps> = ({ grades }) => {
 
+  // Defining the columns of the Grade Table -- total of 6 columns
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'Student ID', width: 110 },
     { field: 'studentName', headerName: 'Student Name', width: 130 },
@@ -39,8 +40,6 @@ export const GradeTable: React.FC<IGradeTableProps> = ({ grades }) => {
       headerAlign: 'left',
     },
   ];
-
-
 
   return (
     <div style={{ height: 400, width: '100%' }}>

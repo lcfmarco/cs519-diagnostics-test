@@ -8,6 +8,10 @@
 /**
  * This represents a class as returned by the API
  */
+
+// CITE: https://stackoverflow.com/questions/37233735/interfaces-vs-types-in-typescript
+// Used this resource to understand when to use interface and types. Ended up sticking with just using interfaces
+
 export interface IUniversityClass {
   classId: string;
   title: string;
@@ -39,6 +43,7 @@ export interface IStudent {
   universityId: string;
 }
 
+// Setting up the GradeTable was helped with ChatGPT
 export interface IGradeTableProps {
   grades: { id: string; studentName: string; finalGrade: number }[];
 }

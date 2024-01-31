@@ -21,7 +21,6 @@ function App() {
   const [currClassId, setCurrClassId] = useState<string>("");
   const [classList, setClassList] = useState<IUniversityClass[]>([]);
   const [grades, setGrades] = useState<TransformedGrade[]>([]);
-  const [gradeTableData, setGradeTableData] = useState([]);
 
   /**
    * This is JUST an example of how you might fetch some data(with a different API).
@@ -45,7 +44,8 @@ function App() {
     console.log(json);
   };
 
-  useEffect(() => {
+  // Fetching the classes of fall2022 for our drop down menu
+  useEffect(() => { 
     const fetchClasses = async () => {
       const headers = {
         'Accept': 'application/json',
@@ -73,34 +73,15 @@ function App() {
     fetchClasses();
   }, []);
 
-  // const fetchAndSetStudentGrades = async (classID: string) => {
-  //   try {
-  //     const studentGrades = await calcAllFinalGrade(classID);
-  //     setGrades(studentGrades);
-  //   } catch (error) {
-  //     console.error("Error fetching and setting student grades:", error);
-  //   }
-  // };  
-
+  // Calling necessary functions and fetching necessary information that will fill the data into our grade table column
   const fetchAndSetStudentGrades = async (classID: string) => {
     try {
       const studentGrades = await calcAllFinalGrade(classID); // Calculating the list of final grades for the chosen class
       const classDetails = await fetchClassById(classID); // Fetching the class details of the class for the grades table
 
-      // console.log(studentGrades);
-
-      // const combinedData = studentGrades.map(grade => ({ // Combining the data together to be reflected onto the data table
-      //   ...grade,
-      //   classId: classDetails.classId,
-      //   className: classDetails.title,
-      //   semester: classDetails.semester
-      // }));
       const combinedData = await Promise.all(studentGrades.map(async (grade) => {
-        // Fetch individual student details
+        // Fetch individual student details based on the student id of a given grade (so we can link the grade reflected on the table to a student)
         const studentDetails = await fetchStudentDetails(grade.id);
-        console.log(studentDetails);
-        console.log(studentDetails[0].name);
-        console.log(studentDetails[0].universityId);
         return {
           id: studentDetails[0].universityId,
           studentName: studentDetails[0].name,
@@ -116,11 +97,6 @@ function App() {
       console.error("Error fetching and setting student grades:", error);
     }
   };  
-
-  // const tableData = await Promise.all(students.map(async (student) => {
-  //   const grades = await fetchGrades(student.id, classID);
-  // }))
-
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
